@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>学生面板 - 作业管理系统</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .btn { display: inline-block; padding: 8px 15px; margin: 2px; text-decoration: none; background-color: #4CAF50; color: white; border-radius: 4px; }
+        .submitted { color: green; font-weight: bold; }
+        .not-submitted { color: red; }
+        .no-assignments { text-align: center; padding: 20px; color: #666; }
+        .user-info { margin-bottom: 15px; padding: 10px; background-color: #f5f5f5; border-radius: 4px; }
+    </style>
 </head>
 <body>
-$END$
+    <div class="header">
+        <h1>学生面板</h1>
+        <a href="{{ url_for('logout') }}" class="btn">退出登录</a>
+    </div>
+
+    <div class="user-info">
+        <p>欢迎, {{ session.name }} ({{ session.username }})</p>
+    </div>
+
+    <h2>作业列表</h2>
+
+    {% if assignments %}
+    <table>
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>发布时间</th>
+                <th>截止时间</th>
+                <th>状态</th>
+                <th>文件提交</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in assignments %}
+            <tr>
+                <td>{{ item.assignment.title }}</td>
+                <td>{{ item.assignment.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    {% if item.assignment.due_date %}
+                        {{ item.assignment.due_date.strftime('%Y-%m-%d') }}
+                    {% else %}
+                        无
+                    {% endif %}
+                </td>
+                <td class="{% if item.submitted %}submitted{% else %}not-submitted{% endif %}">
+                    {% if item.submitted %}已提交{% else %}未提交{% endif %}
+                </td>
+                <td>
+                    {% if item.submitted and item.submission.file_name %}
+                        ✓ 已上传文件
+                    {% elif item.submitted %}
+                        仅文本
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('submit_assignment', assignment_id=item.assignment.id) }}" class="btn">
+                        {% if item.submitted %}查看/修改{% else %}提交作业{% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-assignments">
+        <p>目前没有可用的作业。</p>
+        <p>请等待老师发布作业。</p>
+    </div>
+    {% endif %}
+
+    <!-- 调试信息（开发阶段可以显示，生产环境应删除） -->
+    <div style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 4px; font-size: 0.9em;">
+        <h3>调试信息</h3>
+        <p>作业总数: {{ assignments|length }}</p>
+        <p>用户ID: {{ session.user_id }}</p>
+        <p>用户名: {{ session.username }}</p>
+    </div>
 </body>
 </html>

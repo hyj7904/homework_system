@@ -1,10 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>提交作业 - 作业管理系统</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; }
+        .assignment-info { background-color: #f8f9fa; padding: 15px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        textarea { width: 100%; padding: 8px; box-sizing: border-box; height: 150px; }
+        input[type="file"] { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; margin-right: 10px; }
+        .btn { display: inline-block; padding: 6px 12px; text-decoration: none; background-color: #6c757d; color: white; border-radius: 4px; }
+        .file-info { background-color: #e9ecef; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        .help-text { color: #6c757d; font-size: 0.9em; }
+    </style>
 </head>
 <body>
-$END$
+    <h1>提交作业</h1>
+
+    <a href="{{ url_for('student_dashboard') }}" class="btn">返回学生面板</a>
+
+    <div class="assignment-info">
+        <h2>{{ assignment.title }}</h2>
+        <p><strong>作业内容:</strong></p>
+        <p>{{ assignment.content }}</p>
+        {% if assignment.due_date %}
+        <p><strong>截止时间:</strong> {{ assignment.due_date.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="content">文本内容 (可选):</label>
+            <textarea id="content" name="content" placeholder="可以在这里输入文本内容，或者上传文件，或者两者都提供">{% if submission %}{{ submission.content }}{% endif %}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="file">上传文件 (支持 .doc, .docx, .pdf, .txt):</label>
+            <input type="file" id="file" name="file" accept=".doc,.docx,.pdf,.txt">
+            <p class="help-text">最大文件大小: 16MB</p>
+
+            {% if submission and submission.file_name %}
+            <div class="file-info">
+                <p><strong>已上传文件:</strong> {{ submission.file_name }}</p>
+                <p>
+                    <a href="{{ url_for('download_file', submission_id=submission.id) }}" class="btn">下载</a>
+                    <a href="{{ url_for('preview_file', submission_id=submission.id) }}" class="btn">预览</a>
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+        <button type="submit">
+            {% if submission %}更新提交{% else %}提交作业{% endif %}
+        </button>
+        <a href="{{ url_for('student_dashboard') }}" class="btn">取消</a>
+    </form>
 </body>
 </html>

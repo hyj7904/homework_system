@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>学生管理 - 作业管理系统</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .btn { display: inline-block; padding: 8px 15px; margin: 2px; text-decoration: none; background-color: #4CAF50; color: white; border-radius: 4px; }
+        .btn-secondary { background-color: #008CBA; }
+        .btn-info { background-color: #17a2b8; }
+    </style>
 </head>
 <body>
-$END$
+    <div class="header">
+        <h1>学生管理 - 欢迎, {{ session.name }}</h1>
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn">返回教师面板</a>
+    </div>
+
+    <h2>所有学生 ({{ students|length }} 人)</h2>
+
+    {% if students %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>姓名</th>
+                <th>邮箱</th>
+                <th>注册时间</th>
+                <th>提交作业数</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.id }}</td>
+                <td>{{ student.username }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email or '未填写' }}</td>
+                <td>
+                    {% if student.created_at %}
+                        {{ student.created_at.strftime('%Y-%m-%d') }}
+                    {% else %}
+                        未知
+                    {% endif %}
+                </td>
+                <td>{{ student.submissions|length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>还没有学生注册。</p>
+    {% endif %}
 </body>
 </html>

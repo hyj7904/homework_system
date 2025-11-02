@@ -1,10 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>查看提交 - 作业管理系统</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .submission { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; }
+        .btn { display: inline-block; padding: 6px 12px; text-decoration: none; background-color: #4CAF50; color: white; border-radius: 4px; margin-right: 5px; }
+        .btn-secondary { background-color: #008CBA; }
+        .btn-info { background-color: #17a2b8; }
+        .file-section { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; }
+    </style>
 </head>
 <body>
-$END$
+    <h1>作业提交情况: {{ assignment.title }}</h1>
+
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn">返回教师面板</a>
+
+    <h2>作业内容:</h2>
+    <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 20px;">
+        <p>{{ assignment.content }}</p>
+        {% if assignment.due_date %}
+        <p><strong>截止时间:</strong> {{ assignment.due_date.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
+    </div>
+
+    <h2>学生提交 ({{ submissions|length }} 份):</h2>
+
+    {% if submissions %}
+        {% for submission in submissions %}
+        <div class="submission">
+            <h3>学生: {{ submission.student.name }} ({{ submission.student.username }})</h3>
+            <p><strong>提交时间:</strong> {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+            {% if submission.content %}
+            <p><strong>文本内容:</strong></p>
+            <div style="background-color: #f0f0f0; padding: 10px; margin: 10px 0;">
+                {{ submission.content | replace('\n', '<br>') | safe }}
+            </div>
+            {% endif %}
+
+            {% if submission.file_name %}
+            <div class="file-section">
+                <p><strong>提交文件:</strong> {{ submission.file_name }}</p>
+                <p>
+                    <a href="{{ url_for('download_file', submission_id=submission.id) }}" class="btn">下载文件</a>
+                    <a href="{{ url_for('preview_file', submission_id=submission.id) }}" class="btn btn-info">预览内容</a>
+                </p>
+            </div>
+            {% endif %}
+
+            {% if submission.grade %}
+            <p><strong>成绩:</strong> {{ submission.grade }}</p>
+            {% else %}
+            <p><strong>成绩:</strong> 尚未评分</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <p>还没有学生提交此作业。</p>
+    {% endif %}
 </body>
 </html>

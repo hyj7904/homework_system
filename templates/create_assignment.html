@@ -1,10 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>发布作业 - 作业管理系统</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        textarea { height: 200px; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }
+        .btn { display: inline-block; padding: 6px 12px; text-decoration: none; background-color: #6c757d; color: white; border-radius: 4px; }
+    </style>
 </head>
 <body>
-$END$
+    <h1>发布新作业</h1>
+
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn">返回</a>
+
+    <form method="POST" style="margin-top: 20px;">
+        <div class="form-group">
+            <label for="title">作业标题:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">作业内容:</label>
+            <textarea id="content" name="content" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="due_date">截止日期:</label>
+            <input type="date" id="due_date" name="due_date">
+        </div>
+
+        <button type="submit">发布作业</button>
+    </form>
 </body>
 </html>
