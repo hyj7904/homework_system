@@ -7,6 +7,9 @@ import os
 from werkzeug.utils import secure_filename
 from docx import Document
 
+from config import Config
+from homework_LLM_grader import PythonCodeGrader
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///homework.db'
@@ -66,7 +69,7 @@ class Submission(db.Model):
 # 创建数据库表
 with app.app_context():
     # 仅测试用
-    db.drop_all()
+    #db.drop_all()
 
     db.create_all()
 
@@ -399,9 +402,21 @@ def preview_file(submission_id):
             for paragraph in doc.paragraphs:
                 content += paragraph.text + "\n"
 
+            if Config.IS_LLM_RUN:
+                try:
+                    # 创建判分器实例
+                    grader = PythonCodeGrader()
+                    grader_result = grader.evaluate_code_2(content)
+                    print(f"📊作业评估结果，来自大模型{Config.MODEL_NAME}--->\n",grader_result)
+                except ValueError as e:
+                    print(f"❌ 初始化错误：{e}")
+                except Exception as e:
+                    print(f"❌ 运行错误：{e}")
+
             return render_template('file_preview.html',
                                    submission=submission,
-                                   content=content,
+                                   file_content=content,
+                                   grader_result=grader_result,
                                    file_type='Word文档')
         else:
             # 对于其他文件类型，显示基本信息

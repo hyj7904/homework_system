@@ -21,9 +21,29 @@
         <p><strong>提交时间:</strong> {{ submission.submitted_at.strftime('%Y-%m-%d %H:%M') }}</p>
     </div>
 
-    <div class="preview-container">
-        <h3>文件内容:</h3>
-        <div class="file-content">{{ content }}</div>
+    <style>
+        .container-flex {
+            display: flex;
+            gap: 20px;
+        }
+        .preview-container {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+    </style>
+
+    <div class="container-flex">
+        <div class="preview-container">
+            <h3>文件内容:</h3>
+            <div class="file-content">{{ file_content }}</div>
+        </div>
+
+        <div class="preview-container">
+            <h3>评分结果:</h3>
+            <div class="file-content">{{ grader_result }}</div>
+        </div>
     </div>
 
     <div>
