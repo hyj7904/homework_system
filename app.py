@@ -9,6 +9,7 @@ from docx import Document
 
 from config import Config
 from homework_LLM_grader import PythonCodeGrader
+from python_speaking import VoiceAssistant
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
@@ -412,6 +413,10 @@ def preview_file(submission_id):
                     print(f"❌ 初始化错误：{e}")
                 except Exception as e:
                     print(f"❌ 运行错误：{e}")
+
+            if Config.IS_SOUND_ON:
+                assistant = VoiceAssistant()
+                assistant.speak(grader_result)
 
             return render_template('file_preview.html',
                                    submission=submission,

@@ -46,7 +46,7 @@
                 <p><strong>已上传文件:</strong> {{ submission.file_name }}</p>
                 <p>
                     <a href="{{ url_for('download_file', submission_id=submission.id) }}" class="btn">下载</a>
-                    <a href="{{ url_for('preview_file', submission_id=submission.id) }}" class="btn">预览</a>
+                    <a href="{{ url_for('preview_file', submission_id=submission.id) }}" class="btn">预览和自动评分</a>
                 </p>
             </div>
             {% endif %}

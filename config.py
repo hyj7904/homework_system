@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
+    # 是否打开声音
+    IS_SOUND_ON = True
+
     # 是否使用LLM
     IS_LLM_RUN = True
     #IS_LLM_RUN = False
